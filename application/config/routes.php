@@ -135,4 +135,5 @@ $route['info/edit'] = 'C_info/edit';
 $route['info/conprecio'] = 'C_info/conprecio';
 $route['info/pagoins'] = 'C_info/pagoins';
 $route['info/detpagolist'] = 'C_info/detpagolist';
+$route['info/detcullist'] = 'C_info/detcullist';
 

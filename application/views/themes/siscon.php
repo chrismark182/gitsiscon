@@ -104,7 +104,7 @@
 			<a href="<?= base_url() ?>" class="brand-logo">SISCON</a>
 			<!-- Dropdown Structure -->
 			<ul id="dropUsuario" class="dropdown-content">
-				<li><a href="<?= base_url() ?>logout">Cerrar Sesión</a></li>
+				<li><a href="<?= base_url() ?>logout">Cerrar Sesión</a></li>  
 			</ul>
 
 

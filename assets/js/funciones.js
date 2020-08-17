@@ -364,6 +364,11 @@ $('#tableenproceso').on('click', 'button[name="btnpreciog"]',function(){
 	//vprecio = $('#precio_'+solabas_id).val();
 	//console.log(vprecio);
 	
+	if(vprecio=== '' || vprecio === 0.00 || parseInt(vprecio) === 0  ){
+		alert("Precio esta vacio, ingresar un valor");
+		return false;
+	}
+	
 	
 	$.ajax({
           url:"http://localhost/siscon/info/updateprecio",
@@ -415,6 +420,9 @@ $('#tableenproceso').on('click', 'button[name="btnpreciog"]',function(){
 		$(this).find('td[name="vcompletado"]').text("% 0");
 		$(this).find('button[name="btnedit"]').prop( "disabled", false );
 		*/
+
+
+
 });	
 	
 
@@ -627,17 +635,7 @@ var table = $('#tabledetprecio');
 			
 			table.append("<tr><td>"+ descrip_pago +"</td><td>" + monto_pago + "</td><td></td></tr>");
 		}
-			  
-			  table.append("</tbody>");
-			  /*
-			  markup = "<tr><td>This is row "  
-                    + lineNo + "</td></tr>"; 
-                tableBody = $("table tbody"); 
-                tableBody.append(markup); 
-				*/
-				
-				
-			  
+		     table.append("</tbody>");
 		  },
 			erro:function(){
 			   
@@ -649,12 +647,74 @@ var table = $('#tabledetprecio');
 });
 
 
+$('#tableculminado').on('click', 'button[name="btndetcul"]',function(){	
+ 
+var solabas_id = $(this).attr('attr_solabas_id');
+
+//console.log(solabas_id);
+
+var table = $('#tablehistorico');
+
+//INICIO
+		$.ajax({
+          url:"http://localhost/siscon/info/detcullist",
+          type:'POST',
+          data: {
+			  "vs_var1" : solabas_id
+		  },
+		  dataType:"JSON",
+		  success:function(result){
+			  
+		var len = result['result'].length;
+		
+		table.append("<tbody>");
+
+		for(var i=0; i<len; i++){
+			 var descrip_pago = result['result'][i].DESCRIPCION;
+			 var monto_pago = result['result'][i].PAGO;
+			 
+			
+			 
+			 var fecha_pago = result['result'][i].FECHA;
+			
+			 var fechahisto = moment(fecha_pago).format("YYYY-MM-DD");
+			
+			
+			table.append("<tr><td>" + fechahisto + "</td><td>"+ descrip_pago +"</td><td>" + monto_pago + "</td><td></td></tr>");
+		}
+		     table.append("</tbody>");
+		  },
+			erro:function(){
+			   
+		   },
+        });			  
+//FIN
+
+});
+
+
+
 
  $('#modal2').modal({
    onCloseStart(){
-	   $("#tabledetprecio tbody").empty();
+	   //$("#tabledetprecio tbody").empty();
+	   $("#tabledetprecio tbody").remove();
 	   //$("#tabledetprecio").empty();
 	   $('#btnaddprecio').prop( "disabled", false );
+           // console.log("Close Start");
+        },
+   onCloseEnd(){
+	   //$("#tabledetprecio > tr").empty();
+           // console.log("Close End");
+        },
+  });
+  
+   $('#modal3').modal({
+   onCloseStart(){
+	   //$("#tabledetprecio tbody").empty();
+	   $("#tablehistorico tbody").remove();
+	   //$("#tabledetprecio").empty();
+	   $('#tablehistorico').prop( "disabled", false );
            // console.log("Close Start");
         },
    onCloseEnd(){
@@ -820,26 +880,19 @@ function AgregarPrecio(ctl){
   
   //console.log(total);
   //return false;
-  //
- 
-  
+
  $($(cols[0]).children("input")[0]).attr("disabled", true);//attr('disabled','disabled');
  $($(cols[1]).children("input")[0]).prop("disabled", true );
  $($(cols[2]).children("button")[0]).prop("disabled", true );
   var vdes = $($(cols[0]).children("input")[0]).val();
   var vpago = parseFloat($($(cols[1]).children("input")[0]).val());
   
+ 
   
-  
-  //var num = 105.56789;
-  //var n = vpago.toFixed(2);
-  
-  //console.log(n);
- // return false;
-	
-	//console.log(vpago);
-	//console.log(total);
-	//return false;
+//console.log(n);
+// return false;
+ 
+//return false;
 
 
 	if(vpago > total){
@@ -882,11 +935,6 @@ var r = confirm("Desea grabar Pago");
 						},
 						dataType:"JSON",
 						success:function(result){
-											
-											
-						
-											
-											
 											
 						porcen = (vpago/total)*100;
 						
@@ -963,6 +1011,9 @@ var r = confirm("Desea grabar Pago");
 						if(porcen==100){
 							
 						$('button[attr_solabas_id="'+vsoliabas+'"]').prop('disabled', true);
+						//window.location.reload();
+						//Cargar pagina web
+						location.reload();
 						}
 						},
 						erro:function(){

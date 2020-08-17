@@ -126,30 +126,6 @@ class C_info extends CI_Controller {
 			 //echo "1";
 		 }
 		 
-		 //if ( ! $this->db->simple_query("select PAGO from DETALLE_PRECIO_SOLICITUD where SOLABAS_N_ID ='{$this->input->post('vs_var1')}'"))
-		//{
-        //$error = $this->db->error(); // Has keys 'code' and 'message'
-		//}
-		 
-		//	if ($query->num_rows() > 0) {
-       // query returned results
-	  	// echo "registros";
-		//} else {
-       // query returned no results
-	   //echo "sin registros";
-	//	}
-		 
-		 
-		 
-		 
-		 //$result = $query->result();
-		 
-		 
-		 //$sql = "select  from DETALLE_PRECIO_SOLICITUD where SOLABAS_N_ID ='{$this->input->post('vs_var1')}'";
-		 //
-		 //$this->datasoliabas['result'] = $this->M_crud->sql($sql);
-		 //
-		 
 		
 	}
 	
@@ -157,7 +133,7 @@ class C_info extends CI_Controller {
 		
 		//$sql = "insert into DETALLE_PRECIO_SOLICITUD (SOLABAS_N_ID,DESCRIPCION,PAGO) values('{$this->input->post('vs_var3')}','{$this->input->post('vs_var2')}','{$this->input->post('vs_var1')}')";
 		
-		$this->db->simple_query("insert into DETALLE_PRECIO_SOLICITUD (SOLABAS_N_ID,DESCRIPCION,PAGO) values('{$this->input->post('vs_var3')}','{$this->input->post('vs_var2')}','{$this->input->post('vs_var1')}')");
+		$this->db->simple_query("insert into DETALLE_PRECIO_SOLICITUD (SOLABAS_N_ID,DESCRIPCION,PAGO,FECHA,REGISTER_USER,REGISTER_DATE) values('{$this->input->post('vs_var3')}','{$this->input->post('vs_var2')}','{$this->input->post('vs_var1')}',GETDATE(),'{$this->session->userdata('id')}',GETDATE())");
 		
 		
 		if($this->input->post('vs_var5')){
@@ -209,12 +185,30 @@ class C_info extends CI_Controller {
 			 //$data['result'] = ['PAGO' => "0"];
 			 //echo "1";
 		 }
+					
+	}
+	
+	
+	public function detcullist(){
+		
+		$sql="select SOLABAS_N_ID,DESCRIPCION,PAGO,FECHA from DETALLE_PRECIO_SOLICITUD where SOLABAS_N_ID = '{$this->input->post('vs_var1')}'";
+		
+		$this->datasoliabas['result'] = $query= $this->M_crud->sql($sql);
 		
 		
+		
+		if($this->datasoliabas['result']!=""){
+			 echo json_encode($this->datasoliabas);
+		 	//echo "2";
+		 }else
+		 {
+			 
+			 //$data['result'] = ['PAGO' => "0"];
+			 //echo "1";
+		 }
 		
 		
 	}
-	
 	
 	
 	

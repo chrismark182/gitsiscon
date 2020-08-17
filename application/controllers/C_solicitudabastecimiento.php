@@ -37,26 +37,29 @@ class C_solicitudabastecimiento extends CI_Controller {
 			
 			//EN PROCESO
 			$sql2= "EXEC SOLIABAS_LIS '{$this->data['session']->USUARI_N_ID}',1"; //AGREGAR SOLABAS_ESTADO = 1
-			
 			$this->data['results2'] = $this->M_crud->sql($sql2);
-			
 			
 			//CULMINADO
 			$sql3= "EXEC SOLIABAS_LIS '{$this->data['session']->USUARI_N_ID}',2"; //AGREGAR SOLABAS_ESTADO = 2
-			
 			$this->data['results3'] = $this->M_crud->sql($sql3);
-			
-			
-			//print
-			
-			
+				
 			//$sql3= "SELECT PAGO FROM DETALLE_PRECIO_SOLICITUD WHERE SOLABAS_N_ID =''";
 			
 			
 		} 
 		elseif($varuid==5 or $varuid==6 )
 		{
+			 //SOLICITADO
 			 $sql = "EXEC SOLIABAS_LIS 1,0";
+			 
+			 //EN PROCESO
+			$sql2= "EXEC SOLIABAS_LIS 1,1"; //AGREGAR SOLABAS_ESTADO = 1
+			$this->data['results2'] = $this->M_crud->sql($sql2);
+			 
+			//CULMINADO
+			$sql3= "EXEC SOLIABAS_LIS 1,2"; //AGREGAR SOLABAS_ESTADO = 2
+			$this->data['results3'] = $this->M_crud->sql($sql3);
+			 
 		}
 		 
 		 
@@ -84,9 +87,10 @@ class C_solicitudabastecimiento extends CI_Controller {
 		//Carga de vistas
 		
 		$sql= 'select top 1 SOLABAS_NUMERO from SOLICITUD_ABASTECIMIENTO order by SOLABAS_N_ID desc';
+
+		//$sql= 'EXEC SOLIABAS_NUMERO';
 		
 		$this->data['results'] = $this->M_crud->sql($sql);
-		
 		
 		$this->load->view('solicitudabastecimiento/V_nuevo', $this->data);
 	}
@@ -113,16 +117,17 @@ class C_solicitudabastecimiento extends CI_Controller {
 												  '{$this->input->post('datorrhh')}',
 												  '{$this->input->post('datootr')}',
 												  '{$this->input->post('otrosin')}',
-												  '{$this->session->userdata('id')}'");
+												  '{$this->session->userdata('id')}','',
+												  '{$this->input->post('descrip_1')}'");
 							
 
 
 			//File
 			 $config['upload_path']          = './uploads/';
              $config['allowed_types']        = 'gif|jpg|png|pdf';
-             $config['max_size']             = 2000; // Can be set to particular file size , here it is 2 MB(2048 Kb)
-             $config['max_width']            = 1024;
-             $config['max_height']           = 1780;
+             $config['max_size']             = 50000; // Can be set to particular file size , here it is 2 MB(2048 Kb)
+             //$config['max_width']            = 1024;
+             //$config['max_height']           = 1780;
 			 $config['encrypt_name'] = TRUE;
 			
 			$this->load->library('upload', $config);
@@ -132,7 +137,8 @@ class C_solicitudabastecimiento extends CI_Controller {
                 if ( ! $this->upload->do_upload('userfile1_'.$i))
                 {
                       $error = array('error' => $this->upload->display_errors());
-
+						
+					  echo $this->upload->display_errors();
                       //$this->load->view('upload_form', $error);
                 }
                 else
@@ -140,6 +146,8 @@ class C_solicitudabastecimiento extends CI_Controller {
                        $data = array('upload_data' => $this->upload->data());
 					   
 					   $file1=$this->upload->data('file_name');
+
+						
 
                       //$this->load->view('upload_success', $data);
                 }
@@ -177,18 +185,9 @@ class C_solicitudabastecimiento extends CI_Controller {
 
                       //$this->load->view('upload_success', $data);
                 }
-				
-				
-				
-				
-				
-				
-				
-						
+					
 			//Fin File
-
-
-							
+		
 			//RETORNA	
 			/*
 			$data =	$this->input->post('vararray');
@@ -224,22 +223,55 @@ class C_solicitudabastecimiento extends CI_Controller {
 												  
 												  
 		/*Aqui va el CORREO*/
-		$this->load->library('email');
+		//$this->load->library('email');
+		
+		  /*
+        * Configuramos los parámetros para enviar el email,
+        * las siguientes configuraciones es recomendable
+        * hacerlas en el fichero email.php dentro del directorio config,
+        * en este caso para hacer un ejemplo rápido lo hacemos
+        * en el propio controlador
+        */
+        
+       //Indicamos el protocolo a utilizar
+        //$config['protocol'] = 'smtp';
+         
+       //El servidor de correo que utilizaremos
+        //$config["smtp_host"] = 'smtp.gmail.com';
+         
+       //Nuestro usuario
+        //$config["smtp_user"] = 'chrismark182@gmail.com';
+         
+       //Nuestra contraseña
+       // $config["smtp_pass"] = 'Cu4dr0s123';   
+         
+       //El puerto que utilizará el servidor smtp
+       // $config["smtp_port"] = '587';
+        
+       //El juego de caracteres a utilizar
+        //$config['charset'] = 'utf-8';
+ 
+       //Permitimos que se puedan cortar palabras
+       // $config['wordwrap'] = TRUE;
+         
+       //El email debe ser valido 
+      // $config['validate'] = true;
+       
+      //Establecemos esta configuración
+       // $this->email->initialize($config);
 
-		$this->email->from('cmcuadros@hotmail.com', 'christian');
-		$this->email->to('chrismark_14@hotmail.com');
+		//$this->email->from('cmcuadros@hotmail.com', 'christian');
+		//$this->email->to('chrismark_14@hotmail.com');
 		//$this->email->cc('another@another-example.com');
 		//$this->email->bcc('them@their-example.com');
 
-		$this->email->subject('Solicitud de Obras/Abastecimiento');
-		$this->email->message('Se genero una solicitud de Obras/Abastecimiento, verificar en el panel .');
+		//$this->email->subject('Solicitud de Obras/Abastecimiento');
+		//$this->email->message('Se genero una solicitud de Obras/Abastecimiento, verificar en el panel .');
 
-		$this->email->send();								  
+		//$this->email->send();								  
 		/////FIN CORREO//										  
 												  
-												  
-												  
-									  
+														  
 			$this->session->set_flashdata('message', 'Solicitud de Abastecimiento creado correctamente');  
 			redirect('solicitudabastecimiento', 'refresh');
 		
@@ -253,21 +285,8 @@ class C_solicitudabastecimiento extends CI_Controller {
 	}
 	
 	
-	
-	/*
-	public function cargarArray(){
-   $data=array(
-    'nombre'=>'Nombre: Ludwing,',
-    'apellido'=>'Apellido: Salinas'
-   );
-   return $data;
-  }
-	*/
-	
 	public function validate(){
 		//echo "prueba";
-		
-		
 		
 		 $sql = "select SOLABAS_DATE,SOLABAS_NUMERO,SOLABAS_EMPRESA,SOLABAS_DEPARTGG,SOLABAS_DEPARTADMI,SOLABAS_DEPARTSISTE,SOLABAS_DEPARTMONI,SOLABAS_DEPARTOPER,SOLABAS_DEPARTGALMA,SOLABAS_DEPARTOPERA,SOLABAS_DEPARTSEGU,SOLABAS_DEPARTRRHH,SOLABAS_DEPARTOTROS,SOLABAS_OTROSOBS,SOLABAS_TIPO from SOLICITUD_ABASTECIMIENTO where
 		SOLABAS_N_ID = '{$this->input->post('vs_var1')}'";
@@ -294,8 +313,10 @@ class C_solicitudabastecimiento extends CI_Controller {
 		
 	//$this->M_crud->sql("update SOLICITUD_ABASTECIMIENTO set SOLABAS_ESTADO = '0'");
 	
+	//$this->db->simple_query("UPDATE SOLICITUD_ABASTECIMIENTO SET SOLABAS_ESTADO = '1' , SOLABAS_OPC1 = '{$this->input->post('rfileid')}' where SOLABAS_N_ID ='{$this->input->post('idsolabas')}'");
 	
-	$this->db->simple_query("UPDATE SOLICITUD_ABASTECIMIENTO SET SOLABAS_ESTADO = '1' , SOLABAS_OPC1 = '{$this->input->post('rfileid')}' where SOLABAS_N_ID ='{$this->input->post('idsolabas')}'");
+	$this->db->simple_query("EXEC SOLIABAS_Upd '{$this->input->post('rfileid')}','{$this->input->post('idsolabas')}'");
+		
 	//return $query->result();
 	
 	
@@ -308,62 +329,17 @@ class C_solicitudabastecimiento extends CI_Controller {
 		redirect('solicitudabastecimiento', 'refresh');
 	}
 	
-	
-	
-	
-	
-	
 	 public function cargaDatos(){
+		 
         // estos son los datos que se cargarán con AJAX
         // De nuestro modelo, invoco el método cargarArray
         //$data["datos"]= $this->modelo->cargarArray();
         // cargo la vista donde se mostrarán los datos: paginaArray2
         
 		//$this->M_crud->sql("select SOLABAS_DATE,SOLABAS_NUMERO,SOLABAS_EMPRESA,SOLABAS_DEPARTGG,SOLABAS_DEPARTADMI,SOLABAS_DEPARTSISTE,SOLABAS_DEPARTMONI,SOLABAS_DEPARTOPER,SOLABAS_DEPARTGALMA,SOLABAS_DEPARTOPERA,SOLABAS_DEPARTSEGU,SOLABAS_DEPARTRRHH,SOLABAS_DEPARTOTROS,SOLABAS_OTROSOBS,SOLABAS_TIPO from SOLICITUD_ABASTECIMIENTO");
-		
-		
-		
+				
 		//$data=array('nombre'=>'Nombre: Ludwing,','apellido'=>'Apellido: Salinas');
-		
-		
 		//$this->load->view("paginaArray2",$data);
     }
-	
-	
-		
-	
-	function sendMail(){
-		$this->load->library('email');
-		//$configuraciones['mailtype']='html';
-		//$this->email->initialize($configuraciones);
-		$this->email->from('correo','persona');
-		$this->email->to('correoenvio');
-		//$this->email->cc('');
-		
-		$this->email->subject('Texto Asunto');
-		//$this->email->message('Texto contenido');
-		$this->email->message('<h2>Correo imagen</h2>
-		<hr><br>
-		TITULO
-		<br>
-		<a href="google.com" ><img src="" height="150" width="150"></a><h3>Click en la imagen </h3>');
-		
-		
-		if($this->email->send()){
-			//echo "Correo enviado";
-			//$this->load->view('');
-		}
-		else{
-			//echo "Correo no enviado";
-			echo $this->email->print_debbuger();
-		}
-		
-		
-		
-		
-		
-	}
-	
-	
   
 }
